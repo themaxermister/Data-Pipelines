@@ -7,7 +7,7 @@ class LoadDimensionOperator(BaseOperator):
     ui_color = '#80BD9E'
 
     insert_sql = """
-        INSERT INTO public.{} ({})
+        INSERT INTO {}
         {}
         """
 
@@ -15,14 +15,12 @@ class LoadDimensionOperator(BaseOperator):
     def __init__(self,
                  redshift_conn_id="",
                  table="",
-                 parameters="",
                  insert_query="",
                  *args, **kwargs):
 
         super(LoadDimensionOperator, self).__init__(*args, **kwargs)
         self.redshift_conn_id = redshift_conn_id
         self.table = table
-        self.parameters = parameters
         self.insert_query = insert_query
 
     def execute(self, context):
@@ -31,7 +29,6 @@ class LoadDimensionOperator(BaseOperator):
         self.log.info(f"Inserting data into {self.table}")
         formatted_sql = LoadDimensionOperator.insert_sql.format(
             self.table,
-            self.parameters,
             self.insert_query
         )
         redshift.run(formatted_sql)

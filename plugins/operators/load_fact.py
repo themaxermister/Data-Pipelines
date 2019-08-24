@@ -7,7 +7,7 @@ class LoadFactOperator(BaseOperator):
     ui_color = '#F98866'
 
     insert_sql = """
-        INSERT INTO {} ({})
+        INSERT INTO {}
         {}
         """
     
@@ -16,7 +16,6 @@ class LoadFactOperator(BaseOperator):
                  redshift_conn_id="",
                  table="",
                  trunc_bool=False,
-                 columns="",
                  insert_query="",
                  *args, **kwargs):
 
@@ -24,7 +23,6 @@ class LoadFactOperator(BaseOperator):
         self.redshift_conn_id = redshift_conn_id
         self.trunc_bool = trunc_bool
         self.table = table
-        self.columns = columns
         self.insert_query = insert_query
 
     def execute(self, context):
@@ -36,11 +34,10 @@ class LoadFactOperator(BaseOperator):
             """
             redshift.run(trunc_query.format(self.table))
             self.log.info(f"TRUNCATED {self.table}")
-        
+
         self.log.info(f"Inserting data into {self.table}")
         formatted_sql = LoadFactOperator.insert_sql.format(
             self.table,
-            self.columns,
             self.insert_query
         )
         redshift.run(formatted_sql)

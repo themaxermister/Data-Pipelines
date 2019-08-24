@@ -1,3 +1,5 @@
+import logging
+
 from airflow.hooks.postgres_hook import PostgresHook
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
@@ -17,16 +19,17 @@ class DataQualityOperator(BaseOperator):
         self.table = table
 
     def execute(self, context):
-        records = redshift_hook.get_records(f"SELECT COUNT(*) FROM {table}")
+        redshift_hook = PostgresHook("redshift")
+        records = redshift_hook.get_records(f"SELECT COUNT(*) FROM {self.table}")
         
         ## Have rows in the table
         if len(records) < 1 or len(records[0]) < 1:
-            raise ValueError(f"Data quality check failed. {table} returned no results")
+            raise ValueError(f"Data quality check failed. {self.table} returned no results")
         num_records = records[0][0]
 
         if num_records < 1:
-            raise ValueError(f"Data quality check failed. {table} contained 0 rows")
-        logging.info(f"Data quality on table {table} check passed with {records[0][0]} records")
+            raise ValueError(f"Data quality check failed. {self.table} contained 0 rows")
+        logging.info(f"Data quality on table {self.table} check passed with {records[0][0]} records")
 
 
 
@@ -38,5 +41,3 @@ class DataQualityOperator(BaseOperator):
 # For example one test could be a SQL statement that checks if certain column contains NULL values by counting all
 # the rows that have NULL in the column. We do not want to have any NULLs so expected result would be O and the test 
 # would compare the SQL statement's outcome to the expected result.
-
-# Test Cases
