@@ -10,16 +10,19 @@ from subdag_load import init_table
 from subdag_check import check_table
 
 import sql_create
-from helpers.sql_load import SqlQueries
+from airflow.operators.udacity_plugin import SqlQueries
 
 start_date = datetime.datetime.utcnow()
 
 default_args = {
     'owner': 'Max',
     'start_date': start_date
-    #'schedule_interval': "@hourly",
-    #'retries': 3,
-    #'retry_delay': datetime.timedelta(minutes=5),
+    # 'depends_on_past': False,
+    # 'retries': 3,
+    # 'retry_delay': timedelta(minutes=5),
+    # 'catchup': False,
+    # email_on_retry': False,
+    # 'schedule_interval': '@hourly'
 }
 
 dag = DAG('dag',
@@ -44,7 +47,6 @@ subdag_stage_event_task = SubDagOperator(
         s3_bucket="udacity-dend",
         s3_key="log_data/",
         json_path="s3://udacity-dend/log_json_path.json",
-
         region = "us-west-2",
         start_date=start_date,
     ),
@@ -81,13 +83,10 @@ subdag_load_songplays_task = SubDagOperator(
         load_songplays_task_id,
         "public.songplays",
         "redshift",
-
-        # SQL
         drop_sql= sql_create.DROP_SONGPLAYS_TABLE,
         create_sql= sql_create.CREATE_SONGPLAYS_TABLE,
         load_sql= SqlQueries.songplay_table_insert,
         fact= True,
-        
         start_date=start_date,
     ),
     task_id=load_songplays_task_id,
@@ -102,12 +101,9 @@ subdag_load_songs_task = SubDagOperator(
         load_songs_task_id,
         "public.songs",
         "redshift",
-
-        # SQL
         drop_sql= sql_create.DROP_SONGS_TABLE,
         create_sql= sql_create.CREATE_SONGS_TABLE,
         load_sql= SqlQueries.song_table_insert,
-
         start_date=start_date,
     ),
     task_id=load_songs_task_id,
@@ -122,12 +118,9 @@ subdag_load_artists_task = SubDagOperator(
         load_artists_task_id,
         "public.artists",
         "redshift",
-
-        # SQL
         drop_sql= sql_create.DROP_ARTISTS_TABLE,
         create_sql= sql_create.CREATE_ARTISTS_TABLE,
         load_sql= SqlQueries.artist_table_insert,
-
         start_date=start_date,
     ),
     task_id=load_artists_task_id,
@@ -142,12 +135,9 @@ subdag_load_users_task = SubDagOperator(
         load_users_task_id,
         "public.users",
         "redshift",
-
-        # SQL
         drop_sql= sql_create.DROP_USERS_TABLE,
         create_sql= sql_create.CREATE_USERS_TABLE,
         load_sql= SqlQueries.user_table_insert,
-
         start_date=start_date,
     ),
     task_id=load_users_task_id,
@@ -162,12 +152,9 @@ subdag_load_time_task = SubDagOperator(
         load_time_task_id,
         "public.time",
         "redshift",
-
-        # SQL
         drop_sql= sql_create.DROP_TIME_TABLE,
         create_sql= sql_create.CREATE_TIME_TABLE,
         load_sql= SqlQueries.time_table_insert,
-
         start_date=start_date,
     ),
     task_id=load_time_task_id,

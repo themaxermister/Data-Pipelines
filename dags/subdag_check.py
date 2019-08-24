@@ -4,7 +4,6 @@ from airflow import DAG
 from airflow.operators.postgres_operator import PostgresOperator
 from airflow.operators.udacity_plugin import DataQualityOperator
 
-
 def check_table (
         parent_dag_name,
         task_id,
@@ -14,7 +13,7 @@ def check_table (
     dag = DAG(
         f"{parent_dag_name}.{task_id}",
         **kwargs
-)
+    )
 
     # SONGPLAYS
     quality_check_songplays  = DataQualityOperator(
