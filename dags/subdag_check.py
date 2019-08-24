@@ -4,6 +4,10 @@ from airflow import DAG
 from airflow.operators.postgres_operator import PostgresOperator
 from airflow.operators.udacity_plugin import DataQualityOperator
 
+'''
+Subdag that run data quality checks on the tables in Redshift
+'''
+
 def check_table (
         parent_dag_name,
         task_id,

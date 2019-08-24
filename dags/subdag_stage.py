@@ -6,6 +6,10 @@ from airflow import DAG
 from airflow.operators.postgres_operator import PostgresOperator
 from airflow.operators.udacity_plugin import (StageToRedshiftOperator)
 
+'''
+Subdag that stages the event_table and songs_table by copying data from S3 to Redshift after creating and dropping the table
+'''
+
 def stage_table (
         parent_dag_name,
         task_id,

@@ -6,6 +6,10 @@ from airflow import DAG
 from airflow.operators.postgres_operator import PostgresOperator
 from airflow.operators.udacity_plugin import (LoadFactOperator, LoadDimensionOperator)
 
+'''
+Subdag that drops, create and loads a table from S3
+'''
+
 def init_table (
         parent_dag_name,
         task_id,
