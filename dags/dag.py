@@ -109,40 +109,6 @@ subdag_load_songs_task = SubDagOperator(
     dag=dag,
 )
 
-# LOAD USERS TABLE
-load_users_task_id = "load_users_tables_task"
-subdag_load_users_task = SubDagOperator(
-    subdag=init_table(
-        "dag",
-        load_users_task_id,
-        "public.users",
-        "redshift",
-        drop_sql= sql_create.DROP_USERS_TABLE,
-        create_sql= sql_create.CREATE_USERS_TABLE,
-        load_sql= SqlQueries.user_table_insert,
-        start_date=start_date,
-    ),
-    task_id=load_users_task_id,
-    dag=dag,
-)
-
-# LOAD SONGS TABLE
-load_songs_task_id = "load_songs_tables_task"
-subdag_load_songs_task = SubDagOperator(
-    subdag=init_table(
-        "dag",
-        load_songs_task_id,
-        "public.songs",
-        "redshift",
-        drop_sql= sql_create.DROP_SONGS_TABLE,
-        create_sql= sql_create.CREATE_SONGS_TABLE,
-        load_sql= SqlQueries.song_table_insert,
-        start_date=start_date,
-    ),
-    task_id=load_songs_task_id,
-    dag=dag,
-)
-
 # LOAD ARTISTS TABLE
 load_artists_task_id = "load_artists_tables_task"
 subdag_load_artists_task = SubDagOperator(
