@@ -1,12 +1,9 @@
 import datetime
-import logging
 
 from airflow import DAG
-from airflow.contrib.hooks.aws_hook import AwsHook
-from airflow.hooks.postgres_hook import PostgresHook
 from airflow.operators.postgres_operator import PostgresOperator
-from airflow.operators.python_operator import PythonOperator
-from airflow.operators import (DataQualityOperator)
+from airflow.operators.udacity_plugin import DataQualityOperator
+
 
 def check_table (
         parent_dag_name,

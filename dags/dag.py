@@ -1,10 +1,9 @@
 import datetime
+import logging
 
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
-from airflow.operators.postgres_operator import PostgresOperator
 from airflow.operators.subdag_operator import SubDagOperator
-from airflow.operators.udacity_plugin import UdacityPlugin
 
 from subdag_create import create_table
 from subdag_stage import stage_table
@@ -15,7 +14,10 @@ start_date = datetime.datetime.utcnow()
 
 default_args = {
     'owner': 'Max',
-    'start_date': start_date,
+    'start_date': start_date
+    #'schedule_interval': "@hourly",
+    #'retries': 3,
+    #'retry_delay': datetime.timedelta(minutes=5),
 }
 
 dag = DAG('dag',
@@ -35,8 +37,16 @@ subdag_stage_task = SubDagOperator(
         "redshift",
         "aws_credentials",
         s3_bucket="udacity-dend",
+        
+        # EVENTS
         s3_events_key="log_data/",
-        s3_log_key="song_data/A/A/A",
+        event_path="s3://udacity-dend/log_json_path.json",
+
+        # SONGS
+        s3_songs_key="song_data/A/A/A",
+        song_path="auto",
+
+        region = "us-west-2",
         start_date=start_date,
     ),
     task_id=stage_task_id,

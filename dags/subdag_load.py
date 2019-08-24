@@ -1,12 +1,11 @@
 import datetime
+import sql
 import logging
 
 from airflow import DAG
-from airflow.contrib.hooks.aws_hook import AwsHook
-from airflow.hooks.postgres_hook import PostgresHook
 from airflow.operators.postgres_operator import PostgresOperator
-from airflow.operators.python_operator import PythonOperator
-from airflow.operators import (LoadFactOperator, LoadDimensionOperator)
+from airflow.operators.udacity_plugin import (LoadFactOperator, LoadDimensionOperator)
+
 
 from helpers.sql_load import SqlQueries
 

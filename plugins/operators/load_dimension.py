@@ -28,14 +28,14 @@ class LoadDimensionOperator(BaseOperator):
     def execute(self, context):
         redshift = PostgresHook(postgres_conn_id=self.redshift_conn_id)
         
-        self.log.info("Inserting data into {}".format(self.table))
+        self.log.info(f"Inserting data into {self.table}")
         formatted_sql = LoadDimensionOperator.insert_sql.format(
             self.table,
             self.parameters,
-            self.insert_query = insert_query
+            self.insert_query
         )
         redshift.run(formatted_sql)
-        self.log.info("{} LOADED".format(self.table))
+        self.log.info(f"{self.table} LOADED")
 
 
 # With dimension and fact operators, you can utilize the provided SQL helper class to

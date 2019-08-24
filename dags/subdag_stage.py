@@ -1,11 +1,9 @@
 import datetime
+import sql
 import logging
 
 from airflow import DAG
-from airflow.contrib.hooks.aws_hook import AwsHook
-from airflow.hooks.postgres_hook import PostgresHook
 from airflow.operators.postgres_operator import PostgresOperator
-from airflow.operators.python_operator import PythonOperator
 from airflow.operators.udacity_plugin import (StageToRedshiftOperator)
 
 import sql_create
@@ -15,9 +13,16 @@ def stage_table (
         task_id,
         redshift_conn_id,
         aws_credentials_id,
+        region,
         s3_bucket,
+
+        # LOG DATA
         s3_events_key,
-        s3_log_key,
+        event_path,
+
+        # SONG DATA
+        s3_songs_key,
+        song_path,
         *args, **kwargs):
     dag = DAG(
         f"{parent_dag_name}.{task_id}",
@@ -42,11 +47,13 @@ def stage_table (
     stage_events_to_redshift = StageToRedshiftOperator(
         task_id='Stage_events',
         dag=dag,
+        table="public.staging_events",
         redshift_conn_id=redshift_conn_id,
         aws_credentials_id=aws_credentials_id,
+        region=region,
         s3_bucket=s3_bucket,
         s3_key=s3_events_key,
-        file_type = "JSON",
+        json_path=event_path
     )
 
 
@@ -68,11 +75,13 @@ def stage_table (
     stage_songs_to_redshift = StageToRedshiftOperator(
         task_id='Stage_songs',
         dag=dag,
+        table="public.staging_songs",
         redshift_conn_id=redshift_conn_id,
         aws_credentials_id=aws_credentials_id,
+        region=region,
         s3_bucket=s3_bucket,
-        s3_key=s3_log_key,
-        file_type = "JSON",
+        s3_key=s3_songs_key,
+        json_path=song_path
     )
 
     drop_stage_events_table >> create_stage_events_table

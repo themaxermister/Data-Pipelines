@@ -35,16 +35,16 @@ class LoadFactOperator(BaseOperator):
                 TRUNCATE TABLE {};
             """
             redshift.run(trunc_query.format(self.table))
-            self.log.info("TRUNCATED {}".format(self.table))
+            self.log.info(f"TRUNCATED {self.table}")
         
-        self.log.info("Inserting data into {}".format(self.table))
-        formatted_sql = LoadFactOperator.copy_sql.format(
+        self.log.info(f"Inserting data into {self.table}")
+        formatted_sql = LoadFactOperator.insert_sql.format(
             self.table,
             self.columns,
-            self.insert_query = insert_query
+            self.insert_query
         )
         redshift.run(formatted_sql)
-        self.log.info("{} LOADED".format(self.table))
+        self.log.info(f"{self.table} LOADED")
 
 
 

@@ -3,24 +3,20 @@ DROP_TABLE = """
 	DROP TABLE IF EXISTS public.{};
 """
 
-DROP_ARTISTS_TABLE = DROP_TABLE.format(
-    "artists"
-)
-
-DROP_SONGPLAYS_TABLE = DROP_TABLE.format(
-    "songplays"
-)
-
-DROP_SONGS_TABLE = DROP_TABLE.format(
-    "songs"
-)
-
 DROP_STAGE_EVENTS_TABLE = DROP_TABLE.format(
     "staging_events"
 )
 
 DROP_STAGE_SONGS_TABLE = DROP_TABLE.format(
     "staging_songs"
+)
+
+DROP_ARTISTS_TABLE = DROP_TABLE.format(
+    "artists"
+)
+
+DROP_SONGS_TABLE = DROP_TABLE.format(
+    "songs"
 )
 
 DROP_TIME_TABLE = DROP_TABLE.format(
@@ -31,38 +27,12 @@ DROP_USERS_TABLE = DROP_TABLE.format(
     "users"
 )
 
-## CREATE TABLE
-CREATE_ARTIST_TABLE = """CREATE TABLE IF NOT EXISTS public.artists (
-	artistid varchar(256) NOT NULL,
-	name varchar(256),
-	location varchar(256),
-	lattitude numeric(18,0),
-	longitude numeric(18,0)
-);"""
+DROP_SONGPLAYS_TABLE = DROP_TABLE.format(
+    "songplays"
+)
 
-CREATE_SONGPLAYS_TABLE = """CREATE TABLE IF NOT EXISTS public.songplays (
-	playid varchar(32) NOT NULL,
-	start_time timestamp NOT NULL,
-	userid int4 NOT NULL,
-	"level" varchar(256),
-	songid varchar(256),
-	artistid varchar(256),
-	sessionid int4,
-	location varchar(256),
-	user_agent varchar(256),
-	CONSTRAINT songplays_pkey PRIMARY KEY (playid)
-);"""
 
-CREATE_SONGS_TABLE = """CREATE TABLE IF NOT EXISTS public.songs (
-	songid varchar(256) NOT NULL,
-	title varchar(256),
-	artistid varchar(256),
-	"year" int4,
-	duration numeric(18,0),
-	CONSTRAINT songs_pkey PRIMARY KEY (songid)
-);"""
-
-STAGE_EVENTS_TABLE = """CREATE TABLE IF NOT EXISTS public.staging_events (
+CREATE_STAGE_EVENTS_TABLE = """CREATE TABLE IF NOT EXISTS public.staging_events (
 	artist varchar(256),
 	auth varchar(256),
 	firstname varchar(256),
@@ -83,7 +53,7 @@ STAGE_EVENTS_TABLE = """CREATE TABLE IF NOT EXISTS public.staging_events (
 	userid int4
 );"""
 
-STAGE_SONGS_TABLE = """CREATE TABLE IF NOT EXISTS public.staging_songs (
+CREATE_STAGE_SONGS_TABLE = """CREATE TABLE IF NOT EXISTS public.staging_songs (
 	num_songs int4,
 	artist_id varchar(256),
 	artist_name varchar(256),
@@ -96,15 +66,37 @@ STAGE_SONGS_TABLE = """CREATE TABLE IF NOT EXISTS public.staging_songs (
 	"year" int4
 );"""
 
-CREATE_TIME_TABLE = """CREATE TABLE IF NOT EXISTS public."time" (
+
+## CREATE TABLE
+CREATE_SONGPLAYS_TABLE = """CREATE TABLE IF NOT EXISTS public.songplays (
+	playid varchar(32) NOT NULL,
 	start_time timestamp NOT NULL,
-	"hour" int4,
-	"day" int4,
-	week int4,
-	"month" varchar(256),
+	userid int4 NOT NULL,
+	"level" varchar(256),
+	songid varchar(256),
+	artistid varchar(256),
+	sessionid int4,
+	location varchar(256),
+	user_agent varchar(256),
+	CONSTRAINT songplays_pkey PRIMARY KEY (playid)
+);"""
+
+CREATE_ARTISTS_TABLE = """CREATE TABLE IF NOT EXISTS public.artists (
+	artistid varchar(256) NOT NULL,
+	name varchar(256),
+	location varchar(256),
+	lattitude numeric(18,0),
+	longitude numeric(18,0)
+);"""
+
+
+CREATE_SONGS_TABLE = """CREATE TABLE IF NOT EXISTS public.songs (
+	songid varchar(256) NOT NULL,
+	title varchar(256),
+	artistid varchar(256),
 	"year" int4,
-	weekday varchar(256),
-	CONSTRAINT time_pkey PRIMARY KEY (start_time)
+	duration numeric(18,0),
+	CONSTRAINT songs_pkey PRIMARY KEY (songid)
 );"""
 
 CREATE_USERS_TABLE = """CREATE TABLE IF NOT EXISTS public.users (
@@ -114,4 +106,15 @@ CREATE_USERS_TABLE = """CREATE TABLE IF NOT EXISTS public.users (
 	gender varchar(256),
 	"level" varchar(256),
 	CONSTRAINT users_pkey PRIMARY KEY (userid)
+);"""
+
+CREATE_TIME_TABLE = """CREATE TABLE IF NOT EXISTS public."time" (
+	start_time timestamp NOT NULL,
+	"hour" int4,
+	"day" int4,
+	week int4,
+	"month" varchar(256),
+	"year" int4,
+	weekday varchar(256),
+	CONSTRAINT time_pkey PRIMARY KEY (start_time)
 );"""
