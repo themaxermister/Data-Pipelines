@@ -211,8 +211,8 @@ root \
 
 [Amazon S3](https://aws.amazon.com/S3/) - Data used \
 [Amazon Redshift](https://aws.amazon.com/redshift/) - Data used \
-[Apache Airflow](https://airflow.apache.org) - Data processing pipeline
-[Python](https://www.python.org/) - Programming language \
+[Apache Airflow](https://airflow.apache.org) - Data processing pipeline \
+[Python](https://www.python.org/) - Programming language 
 
 ## Authors
 
