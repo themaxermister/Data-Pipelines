@@ -1,56 +1,63 @@
+import datetime
+import sql
+import logging
+
 from airflow import DAG
 from airflow.operators.postgres_operator import PostgresOperator
-from airflow.operators.udacity_plugin import DataQualityOperator
+from airflow.operators.udacity_plugin import (LoadFactOperator, LoadDimensionOperator)
 
-def check_table (
+def init_table (
         parent_dag_name,
         task_id,
+        table,
         redshift_conn_id,
+        drop_sql,
+        create_sql,
+        load_sql,
+        fact = False,
         *args, **kwargs):
-    
+   
     dag = DAG(
         f"{parent_dag_name}.{task_id}",
         **kwargs
     )
 
-    # SONGPLAYS
-    quality_check_songplays  = DataQualityOperator(
-        task_id='Run_data_quality_checks_songplays',
+    # DROP
+    drop_table = PostgresOperator(
+        task_id=f"drop_{table}_table",
         dag=dag,
-        redshift_conn_id=redshift_conn_id,
-        table = "public.songplays",
+        postgres_conn_id=redshift_conn_id,
+        sql=drop_sql,
     )
 
-    # ARTISTS
-    quality_check_artist  = DataQualityOperator(
-        task_id='Run_data_quality_checks_artists',
+    # CREATE
+    create_table = PostgresOperator(
+        task_id=f"create_{table}_table",
         dag=dag,
-        redshift_conn_id=redshift_conn_id,
-        table = "public.artists",
+        postgres_conn_id=redshift_conn_id,
+        sql=create_sql,
     )
 
-    # SONGS
-    quality_check_song  = DataQualityOperator(
-        task_id='Run_data_quality_checks_songs',
-        dag=dag,
-        redshift_conn_id=redshift_conn_id,
-        table = "public.songs",
-    )
+    if fact:
+        # LOAD
+        load_table = LoadFactOperator(
+            task_id=f'Load_{table}_fact_table',
+            dag=dag,
+            redshift_conn_id=redshift_conn_id,
+            table=table,
+            insert_query=load_sql,
 
-    # USERS
-    quality_check_users  = DataQualityOperator(
-        task_id='Run_data_quality_checks_users',
-        dag=dag,
-        redshift_conn_id=redshift_conn_id,
-        table = "public.users",
-    )
+        )
+    else:
+        load_table = LoadDimensionOperator(
+            task_id=f'Load_{table}_dim_table',
+            dag=dag,
+            redshift_conn_id=redshift_conn_id,
+            table=table,
+            insert_query=load_sql,
+        )   
 
-    # TIME
-    quality_check_time  = DataQualityOperator(
-        task_id='Run_data_quality_check_time',
-        dag=dag,
-        redshift_conn_id=redshift_conn_id,
-        table = "public.time",
-    )
-
+    drop_table >> create_table
+    create_table >> load_table
+   
     return dag
