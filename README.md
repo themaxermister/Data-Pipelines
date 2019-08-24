@@ -56,27 +56,27 @@ The growing user base and song database of a music streaming startup, Sparkify. 
 
 ## Flow of data in subdag_stage.py
 
-- staging_events table \
+- staging_events table
 <img src="images/stage_songs_table.png"/> 
 
-- staging_songs table \
+- staging_songs table
 <img src="images/stage_events_table.png"/>
 
 ## Flow of data in subdag_load.py
 
-- songplays table (Fact) \
+- songplays table (Fact)
 <img src="images/load_songplays_table.png"/>
 
-- songs table (Dimensional) \
+- songs table (Dimensional)
 <img src="images/load_songs_table.png"/>
 
-- artists table (Dimensional) \
+- artists table (Dimensional)
 <img src="images/load_artists_table.png"/>
 
-- users table (Dimensional) \
+- users table (Dimensional)
 <img src="images/load_users_table.png"/>
 
-- time table (Dimensional) \
+- time table (Dimensional)
 <img src="images/load_time_table.png"/>
 
 ## Flow of data in subdag_check.py
