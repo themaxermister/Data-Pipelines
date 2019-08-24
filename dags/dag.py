@@ -12,8 +12,11 @@ from subdag_check import check_table
 import sql_create
 from helpers import SqlQueries
 
-start_date = datetime.datetime.utcnow()
+'''
+Main dag file that comprises of the overall flow of data in the pipeline
+'''
 
+start_date = datetime.datetime.utcnow()
 
 default_args = {
     'owner': 'Max',
