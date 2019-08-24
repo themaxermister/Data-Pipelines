@@ -14,12 +14,15 @@ from helpers import SqlQueries
 
 start_date = datetime.datetime.utcnow()
 
+
 default_args = {
     'owner': 'Max',
     'start_date': start_date
-    #'schedule_interval': "@hourly",
+    #'depends_on_past': False,
     #'retries': 3,
     #'retry_delay': datetime.timedelta(minutes=5),
+    #'email_on_retry': False,
+    #'schedule_interval': "@hourly"
 }
 
 dag = DAG('dag',
